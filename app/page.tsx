@@ -5,6 +5,7 @@ import QuizSession from "@/components/QuizSession";
 import ShopModal from "@/components/ShopModal";
 import DailyMissions from "@/components/DailyMissions";
 import BackupModal from "@/components/BackupModal";
+import CharacterSelect from "@/components/CharacterSelect";
 import {
   loadGameState,
   saveGameState,
@@ -53,7 +54,8 @@ type ModalState =
   | { type: "quiz"; subject: Subject }
   | { type: "review"; subject: Subject }
   | { type: "shop" }
-  | { type: "backup" };
+  | { type: "backup" }
+  | { type: "charselect" };
 
 export default function Home() {
   const [gameState, setGameState] = useState<GameState | null>(null);
@@ -201,20 +203,22 @@ export default function Home() {
     <main className="min-h-screen bg-gray-950 text-white pb-10">
       {/* Header */}
       <div className="bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
-        <h1 className="font-bold text-lg text-yellow-400 tracking-wider">
-          📚 STUDY QUEST
-        </h1>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setModal({ type: "backup" })}
-            className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1.5 rounded-lg text-sm transition"
-          >
+          <h1 className="font-bold text-lg text-yellow-400 tracking-wider">
+            📚 STUDY QUEST
+          </h1>
+          <a href="/admin"
+            className="text-xs bg-gray-700 hover:bg-gray-600 text-gray-400 hover:text-white px-2 py-1 rounded-lg transition">
+            🛠️ 管理
+          </a>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setModal({ type: "backup" })}
+            className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1.5 rounded-lg text-sm transition">
             💾
           </button>
-          <button
-            onClick={() => setModal({ type: "shop" })}
-            className="bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-4 py-1.5 rounded-lg text-sm transition"
-          >
+          <button onClick={() => setModal({ type: "shop" })}
+            className="bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-4 py-1.5 rounded-lg text-sm transition">
             🏪 ショップ
           </button>
         </div>
@@ -264,7 +268,11 @@ export default function Home() {
             isLevelingUp ? "border-yellow-400 shadow-lg shadow-yellow-400/20" : "border-gray-700"
           }`}
         >
-          <CharacterDisplay gameState={gameState} isLevelingUp={isLevelingUp} />
+          <CharacterDisplay
+            gameState={gameState}
+            isLevelingUp={isLevelingUp}
+            onSelectCharacter={() => setModal({ type: "charselect" })}
+          />
         </div>
 
         {/* Daily Missions */}
@@ -368,35 +376,7 @@ export default function Home() {
         </div>
 
         {/* Evolution Guide */}
-        <div className="bg-gray-900 border border-gray-700 rounded-2xl p-4">
-          <h3 className="text-gray-400 text-sm font-bold mb-3">⚡ キャラ進化ガイド</h3>
-          <div className="flex justify-between items-center">
-            {[
-              { emoji: "🥚", level: 1 },
-              { emoji: "🐣", level: 3 },
-              { emoji: "🧒", level: 5 },
-              { emoji: "🧑‍🦯", level: 7 },
-              { emoji: "😈", level: 9 },
-            ].map((c, i) => (
-              <div key={i} className="text-center flex-1">
-                <div className={`text-2xl ${gameState.level >= c.level ? "opacity-100" : "opacity-25"}`}>
-                  {c.emoji}
-                </div>
-                <p className="text-xs text-gray-500">Lv{c.level}</p>
-              </div>
-            ))}
-          </div>
-          <div className="flex items-center mt-2 px-2">
-            {[3, 5, 7, 9].map((threshold, i) => (
-              <div
-                key={i}
-                className={`flex-1 h-1.5 mx-1 rounded-full transition-all duration-500 ${
-                  gameState.level >= threshold ? "bg-yellow-400" : "bg-gray-700"
-                }`}
-              />
-            ))}
-          </div>
-        </div>
+        <EvolutionGuide gameState={gameState} onChangeChar={() => setModal({ type: "charselect" })} />
       </div>
 
       {/* Quiz Modal */}
@@ -433,6 +413,66 @@ export default function Home() {
           onClose={() => setModal({ type: "none" })}
         />
       )}
+
+      {/* Character Select Modal */}
+      {modal.type === "charselect" && (
+        <CharacterSelect
+          currentId={gameState.selectedCharacter ?? "brave"}
+          level={gameState.level}
+          onSelect={(id) => {
+            const newState = { ...gameState, selectedCharacter: id };
+            saveGameState(newState);
+            setGameState(newState);
+            showNotif("🎭 キャラクターを変更した！");
+          }}
+          onClose={() => setModal({ type: "none" })}
+        />
+      )}
     </main>
+  );
+}
+
+// ---- 進化ガイド (キャラ対応) ----
+import { getCharacterDef } from "@/lib/characters";
+
+function EvolutionGuide({
+  gameState,
+  onChangeChar,
+}: {
+  gameState: GameState;
+  onChangeChar: () => void;
+}) {
+  const charId = gameState.selectedCharacter ?? "brave";
+  const def = getCharacterDef(charId);
+
+  return (
+    <div className="bg-gray-900 border border-gray-700 rounded-2xl p-4">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-gray-400 text-sm font-bold">⚡ キャラ進化ガイド</h3>
+        <button onClick={onChangeChar}
+          className="text-xs bg-gray-700 hover:bg-gray-600 text-gray-300 px-2 py-1 rounded-lg transition">
+          🎭 キャラ変更
+        </button>
+      </div>
+      <div className="flex justify-between items-center">
+        {def.stages.map((s, i) => (
+          <div key={i} className="text-center flex-1">
+            <div className={`text-2xl ${gameState.level >= s.minLevel ? "opacity-100" : "opacity-25"}`}>
+              {s.emoji}
+            </div>
+            <p className="text-xs text-gray-500">Lv{s.minLevel}</p>
+          </div>
+        ))}
+      </div>
+      <div className="flex items-center mt-2 px-2">
+        {[3, 5, 7, 9].map((threshold, i) => (
+          <div key={i}
+            className={`flex-1 h-1.5 mx-1 rounded-full transition-all duration-500 ${
+              gameState.level >= threshold ? "bg-yellow-400" : "bg-gray-700"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
   );
 }

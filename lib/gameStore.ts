@@ -20,17 +20,6 @@ export function getXPForNextLevel(level: number): number {
   return LEVEL_THRESHOLDS[Math.min(level, LEVEL_THRESHOLDS.length - 1)] || 9999;
 }
 
-export const CHARACTER_STAGES = [
-  { minLevel: 1, maxLevel: 2, name: "たまご", emoji: "🥚", color: "from-gray-400 to-gray-500" },
-  { minLevel: 3, maxLevel: 4, name: "ひよこ", emoji: "🐣", color: "from-yellow-400 to-yellow-500" },
-  { minLevel: 5, maxLevel: 6, name: "少年", emoji: "🧒", color: "from-blue-400 to-blue-500" },
-  { minLevel: 7, maxLevel: 8, name: "勇者", emoji: "🧑‍🦯", color: "from-green-400 to-green-500" },
-  { minLevel: 9, maxLevel: 10, name: "魔王", emoji: "😈", color: "from-purple-500 to-purple-700" },
-];
-
-export function getCharacterStage(level: number) {
-  return CHARACTER_STAGES.find((s) => level >= s.minLevel && level <= s.maxLevel) || CHARACTER_STAGES[0];
-}
 
 // デイリーミッション定義
 const MISSION_TEMPLATES: Omit<DailyMission, "progress" | "completed">[] = [
@@ -71,6 +60,7 @@ const defaultState: GameState = {
   wrongQuestions: [],
   dailyMissions: [],
   dailyMissionsDate: null,
+  selectedCharacter: "brave",
 };
 
 export function loadGameState(): GameState {

@@ -51,7 +51,8 @@ export interface GameState {
     logic: { correct: number; total: number };
   };
   completedQuestions: string[];
-  wrongQuestions: string[];       // 間違えた問題IDリスト
+  wrongQuestions: string[];
   dailyMissions: DailyMission[];
   dailyMissionsDate: string | null;
+  selectedCharacter: string;      // "brave" | "wizard" | "ninja"
 }
