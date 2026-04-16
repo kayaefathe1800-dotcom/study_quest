@@ -3,6 +3,7 @@ export type Subject = "math" | "japanese" | "logic";
 export interface Question {
   id: string;
   subject: Subject;
+  category: string;
   difficulty: 1 | 2 | 3;
   question: string;
   choices: string[];
