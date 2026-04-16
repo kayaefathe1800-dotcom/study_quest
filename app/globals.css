@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #030712;
+  --foreground: #f9fafb;
 }
 
 @theme inline {
@@ -12,15 +12,82 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Level up flash */
+@keyframes levelup-flash {
+  0%   { opacity: 0; transform: scale(0.5); }
+  30%  { opacity: 1; transform: scale(1.2); }
+  70%  { opacity: 1; transform: scale(1.0); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+.animate-levelup {
+  animation: levelup-flash 2.5s ease-out forwards;
+}
+
+/* Correct answer sparkle */
+@keyframes sparkle {
+  0%   { opacity: 1; transform: scale(0) rotate(0deg); }
+  50%  { opacity: 1; transform: scale(1.3) rotate(180deg); }
+  100% { opacity: 0; transform: scale(0) rotate(360deg); }
+}
+.animate-sparkle {
+  animation: sparkle 0.7s ease-out forwards;
+}
+
+/* Character bounce on level up */
+@keyframes char-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  25%       { transform: translateY(-12px) scale(1.1); }
+  50%       { transform: translateY(-6px) scale(1.05); }
+  75%       { transform: translateY(-10px) scale(1.08); }
+}
+.animate-char-bounce {
+  animation: char-bounce 0.8s ease-in-out 3;
+}
+
+/* Shake for wrong answer */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX(6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* XP gain float */
+@keyframes float-up {
+  0%   { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-40px); }
+}
+.animate-float-up {
+  animation: float-up 1.2s ease-out forwards;
 }
