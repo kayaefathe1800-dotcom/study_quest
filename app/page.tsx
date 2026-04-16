@@ -6,6 +6,7 @@ import ShopModal from "@/components/ShopModal";
 import DailyMissions from "@/components/DailyMissions";
 import BackupModal from "@/components/BackupModal";
 import CharacterSelect from "@/components/CharacterSelect";
+import { getCharacterDef } from "@/lib/characters";
 import {
   loadGameState,
   saveGameState,
@@ -433,8 +434,6 @@ export default function Home() {
 }
 
 // ---- 進化ガイド (キャラ対応) ----
-import { getCharacterDef } from "@/lib/characters";
-
 function EvolutionGuide({
   gameState,
   onChangeChar,
