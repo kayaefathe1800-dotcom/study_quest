@@ -36,9 +36,9 @@ export function getCharacterStage(level: number) {
 const MISSION_TEMPLATES: Omit<DailyMission, "progress" | "completed">[] = [
   { id: "m_math3", description: "数学を3問解く", subject: "math", type: "solve", target: 3, xpReward: 30, coinReward: 15 },
   { id: "m_jp3", description: "国語を3問解く", subject: "japanese", type: "solve", target: 3, xpReward: 30, coinReward: 15 },
-  { id: "m_sci3", description: "理科を3問解く", subject: "science", type: "solve", target: 3, xpReward: 40, coinReward: 20 },
+  { id: "m_logic3", description: "論理思考を3問解く", subject: "logic", type: "solve", target: 3, xpReward: 40, coinReward: 20 },
   { id: "m_any5", description: "合計5問解く", subject: "any", type: "solve", target: 5, xpReward: 35, coinReward: 15 },
-  { id: "m_sci_perfect", description: "理科で全問正解する", subject: "science", type: "perfect", target: 1, xpReward: 50, coinReward: 25 },
+  { id: "m_logic_perfect", description: "論理思考で全問正解する", subject: "logic", type: "perfect", target: 1, xpReward: 50, coinReward: 25 },
   { id: "m_math_perfect", description: "数学で全問正解する", subject: "math", type: "perfect", target: 1, xpReward: 50, coinReward: 25 },
   { id: "m_streak", description: "今日の学習を始める", subject: "any", type: "streak", target: 1, xpReward: 20, coinReward: 10 },
 ];
@@ -65,8 +65,8 @@ const defaultState: GameState = {
   subjectStats: {
     math: { correct: 0, total: 0 },
     japanese: { correct: 0, total: 0 },
-    science: { correct: 0, total: 0 },
-  },
+    logic: { correct: 0, total: 0 },
+  } as GameState["subjectStats"],
   completedQuestions: [],
   wrongQuestions: [],
   dailyMissions: [],

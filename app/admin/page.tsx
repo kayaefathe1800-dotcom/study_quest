@@ -9,7 +9,7 @@ const STORAGE_KEY = "study-game-custom-questions";
 const SUBJECT_NAMES: Record<Subject, string> = {
   math: "数学",
   japanese: "国語",
-  science: "理科",
+  logic: "論理思考",
 };
 
 const emptyQuestion = (): Omit<Question, "id"> => ({
@@ -166,7 +166,7 @@ export default function AdminPage() {
       <div className="max-w-lg mx-auto px-4 pt-4 space-y-4">
         {/* Stats */}
         <div className="grid grid-cols-4 gap-2">
-          {(["all", "math", "japanese", "science"] as const).map((s) => {
+          {(["all", "math", "japanese", "logic"] as const).map((s) => {
             const count = s === "all" ? questions.length : questions.filter((q) => q.subject === s).length;
             return (
               <button
@@ -194,7 +194,7 @@ export default function AdminPage() {
                   <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                     q.subject === "math" ? "bg-blue-600 text-white" :
                     q.subject === "japanese" ? "bg-pink-600 text-white" :
-                    "bg-green-600 text-white"
+                    "bg-purple-600 text-white"
                   }`}>
                     {SUBJECT_NAMES[q.subject]}
                   </span>
@@ -255,7 +255,7 @@ export default function AdminPage() {
               <div>
                 <label className="text-xs text-gray-400 font-bold block mb-1.5">科目</label>
                 <div className="grid grid-cols-3 gap-2">
-                  {(["math", "japanese", "science"] as Subject[]).map((s) => (
+                  {(["math", "japanese", "logic"] as Subject[]).map((s) => (
                     <button
                       key={s}
                       onClick={() => setForm((f) => ({ ...f, subject: s }))}

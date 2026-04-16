@@ -14,19 +14,19 @@ interface Props {
 const SUBJECT_NAMES: Record<Subject, string> = {
   math: "数学",
   japanese: "国語",
-  science: "理科",
+  logic: "論理思考",
 };
 
 const SUBJECT_EMOJIS: Record<Subject, string> = {
   math: "📐",
   japanese: "📖",
-  science: "🔬",
+  logic: "🧩",
 };
 
 const SUBJECT_COLORS: Record<Subject, string> = {
   math: "from-blue-500 to-blue-700",
   japanese: "from-pink-500 to-rose-600",
-  science: "from-green-500 to-emerald-700",
+  logic: "from-purple-500 to-violet-700",
 };
 
 export default function QuizSession({ subject, reviewQuestions, allQuestions, onComplete, onClose }: Props) {

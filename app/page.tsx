@@ -39,11 +39,11 @@ const SUBJECTS: {
     color: "from-pink-600 to-rose-700 hover:from-pink-500 hover:to-rose-600",
   },
   {
-    id: "science",
-    name: "理科",
-    emoji: "🔬",
-    desc: "物理・化学・生物・地学",
-    color: "from-green-600 to-emerald-700 hover:from-green-500 hover:to-emerald-600",
+    id: "logic",
+    name: "論理思考",
+    emoji: "🧩",
+    desc: "推理・数列・パズル・場合の数",
+    color: "from-purple-600 to-violet-700 hover:from-purple-500 hover:to-violet-600",
     bonus: "XP2倍！",
   },
 ];
@@ -173,11 +173,11 @@ export default function Home() {
   const totalCorrect =
     gameState.subjectStats.math.correct +
     gameState.subjectStats.japanese.correct +
-    gameState.subjectStats.science.correct;
+    gameState.subjectStats.logic.correct;
   const totalSolved =
     gameState.subjectStats.math.total +
     gameState.subjectStats.japanese.total +
-    gameState.subjectStats.science.total;
+    gameState.subjectStats.logic.total;
   const accuracy = totalSolved > 0 ? Math.round((totalCorrect / totalSolved) * 100) : 0;
 
   // 科目ごとの間違い問題数
@@ -272,7 +272,7 @@ export default function Home() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-3 gap-2">
-          {(["math", "japanese", "science"] as Subject[]).map((s) => {
+          {(["math", "japanese", "logic"] as Subject[]).map((s) => {
             const stats = gameState.subjectStats[s];
             const acc = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
             const sub = SUBJECTS.find((x) => x.id === s)!;

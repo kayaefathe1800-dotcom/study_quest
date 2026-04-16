@@ -1,4 +1,4 @@
-export type Subject = "math" | "japanese" | "science";
+export type Subject = "math" | "japanese" | "logic";
 
 export interface Question {
   id: string;
@@ -47,7 +47,7 @@ export interface GameState {
   subjectStats: {
     math: { correct: number; total: number };
     japanese: { correct: number; total: number };
-    science: { correct: number; total: number };
+    logic: { correct: number; total: number };
   };
   completedQuestions: string[];
   wrongQuestions: string[];       // 間違えた問題IDリスト
