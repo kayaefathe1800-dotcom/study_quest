@@ -4,6 +4,7 @@ import CharacterDisplay from "@/components/CharacterDisplay";
 import QuizSession from "@/components/QuizSession";
 import ShopModal from "@/components/ShopModal";
 import DailyMissions from "@/components/DailyMissions";
+import BackupModal from "@/components/BackupModal";
 import {
   loadGameState,
   saveGameState,
@@ -13,7 +14,7 @@ import {
   updateMissions,
 } from "@/lib/gameStore";
 import { GameState, Subject } from "@/lib/types";
-import { questions } from "@/lib/questions";
+import { useQuestions } from "@/lib/useQuestions";
 
 const SUBJECTS: {
   id: Subject;
@@ -51,11 +52,13 @@ type ModalState =
   | { type: "none" }
   | { type: "quiz"; subject: Subject }
   | { type: "review"; subject: Subject }
-  | { type: "shop" };
+  | { type: "shop" }
+  | { type: "backup" };
 
 export default function Home() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [modal, setModal] = useState<ModalState>({ type: "none" });
+  const allQuestions = useQuestions();
   const [isLevelingUp, setIsLevelingUp] = useState(false);
   const [notification, setNotification] = useState<{ text: string; key: number } | null>(null);
   const [missionNotifs, setMissionNotifs] = useState<string[]>([]);
@@ -104,7 +107,7 @@ export default function Home() {
     if (modal.type === "review") {
       // 復習で正解した問題はリストから削除
       const reviewedIds = gameState!.wrongQuestions.filter((id) => {
-        const q = questions.find((q) => q.id === id && q.subject === subject);
+        const q = allQuestions.find((q) => q.id === id && q.subject === subject);
         return !!q;
       });
       reviewedIds.forEach((id) => {
@@ -180,15 +183,15 @@ export default function Home() {
   // 科目ごとの間違い問題数
   const wrongBySubject = (subject: Subject) =>
     gameState.wrongQuestions.filter((id) =>
-      questions.find((q) => q.id === id && q.subject === subject)
+      allQuestions.find((q) => q.id === id && q.subject === subject)
     ).length;
 
   // クイズセッションに渡す復習問題
   const getReviewQuestions = (subject: Subject) => {
     const wrongIds = gameState.wrongQuestions.filter((id) =>
-      questions.find((q) => q.id === id && q.subject === subject)
+      allQuestions.find((q) => q.id === id && q.subject === subject)
     );
-    return questions
+    return allQuestions
       .filter((q) => wrongIds.includes(q.id))
       .sort(() => Math.random() - 0.5)
       .slice(0, 5);
@@ -201,12 +204,20 @@ export default function Home() {
         <h1 className="font-bold text-lg text-yellow-400 tracking-wider">
           📚 STUDY QUEST
         </h1>
-        <button
-          onClick={() => setModal({ type: "shop" })}
-          className="bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-4 py-1.5 rounded-lg text-sm transition"
-        >
-          🏪 ショップ
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setModal({ type: "backup" })}
+            className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1.5 rounded-lg text-sm transition"
+          >
+            💾
+          </button>
+          <button
+            onClick={() => setModal({ type: "shop" })}
+            className="bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-4 py-1.5 rounded-lg text-sm transition"
+          >
+            🏪 ショップ
+          </button>
+        </div>
       </div>
 
       {/* Notification */}
@@ -392,6 +403,7 @@ export default function Home() {
       {(modal.type === "quiz" || modal.type === "review") && (
         <QuizSession
           subject={modal.subject}
+          allQuestions={allQuestions}
           reviewQuestions={
             modal.type === "review" ? getReviewQuestions(modal.subject) : undefined
           }
@@ -406,6 +418,18 @@ export default function Home() {
           gameState={gameState}
           onBuy={handleBuy}
           onEquip={handleEquip}
+          onClose={() => setModal({ type: "none" })}
+        />
+      )}
+
+      {/* Backup Modal */}
+      {modal.type === "backup" && (
+        <BackupModal
+          gameState={gameState}
+          onRestore={(restoredState) => {
+            saveGameState(restoredState);
+            setGameState(restoredState);
+          }}
           onClose={() => setModal({ type: "none" })}
         />
       )}

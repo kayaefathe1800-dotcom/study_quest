@@ -1,11 +1,12 @@
 "use client";
 import { useState } from "react";
 import { Question, Subject } from "@/lib/types";
-import { getRandomQuestions } from "@/lib/questions";
+import { getRandomQuestionsFromList } from "@/lib/useQuestions";
 
 interface Props {
   subject: Subject;
-  reviewQuestions?: Question[]; // 復習モード用
+  reviewQuestions?: Question[];
+  allQuestions: Question[];
   onComplete: (correct: number, total: number, earnedXP: number, wrongIds: string[]) => void;
   onClose: () => void;
 }
@@ -28,9 +29,9 @@ const SUBJECT_COLORS: Record<Subject, string> = {
   science: "from-green-500 to-emerald-700",
 };
 
-export default function QuizSession({ subject, reviewQuestions, onComplete, onClose }: Props) {
+export default function QuizSession({ subject, reviewQuestions, allQuestions, onComplete, onClose }: Props) {
   const [questions] = useState<Question[]>(
-    () => reviewQuestions ?? getRandomQuestions(subject, 5)
+    () => reviewQuestions ?? getRandomQuestionsFromList(allQuestions, subject, 5)
   );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
